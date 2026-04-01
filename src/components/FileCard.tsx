@@ -20,14 +20,14 @@ export function FileCard({ file, onRemove }: Props) {
   return (
     <div
       className={cn(
-        'flex gap-4 rounded-xl border bg-card p-4 transition-all duration-200',
+        'flex gap-3 rounded-xl border bg-card p-3 transition-all duration-200 sm:gap-4 sm:p-4',
         file.status === 'error' && 'border-destructive/40 bg-destructive/5',
         file.status === 'done' && 'border-green-500/25 dark:border-green-500/20',
         file.status === 'processing' && 'border-border',
       )}
     >
       {/* Thumbnail */}
-      <div className="relative h-[72px] w-[72px] shrink-0 overflow-hidden rounded-lg bg-muted">
+      <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-muted sm:h-[72px] sm:w-[72px]">
         <img
           src={file.previewUrl}
           alt={file.originalFile.name}
@@ -48,7 +48,7 @@ export function FileCard({ file, onRemove }: Props) {
       {/* Info */}
       <div className="min-w-0 flex-1">
         <div className="flex items-start justify-between gap-2">
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium text-card-foreground">
               {file.originalFile.name}
             </p>
@@ -59,7 +59,7 @@ export function FileCard({ file, onRemove }: Props) {
           <button
             type="button"
             onClick={() => onRemove(file.id)}
-            className="shrink-0 cursor-pointer text-muted-foreground/50 transition-colors hover:text-destructive"
+            className="-mr-1 -mt-1 shrink-0 cursor-pointer p-2 text-muted-foreground/50 transition-colors hover:text-destructive"
             aria-label={`${file.originalFile.name} 제거`}
           >
             <Trash2 size={14} />
@@ -67,7 +67,7 @@ export function FileCard({ file, onRemove }: Props) {
         </div>
 
         {/* EXIF Tags */}
-        <div className="mt-2.5 min-h-[20px]">
+        <div className="mt-2 min-h-[20px]">
           {file.status === 'processing' ? (
             <p className="text-xs text-muted-foreground/60">메타데이터 분석 중...</p>
           ) : file.exifTags.length > 0 ? (
@@ -87,11 +87,21 @@ export function FileCard({ file, onRemove }: Props) {
             <span>{file.error ?? '처리 중 오류가 발생했습니다'}</span>
           </div>
         )}
+
+        {/* Download — mobile: below tags */}
+        {file.status === 'done' && file.cleanedBlob && (
+          <div className="mt-2.5 sm:hidden">
+            <Button size="sm" onClick={handleDownload} className="w-full gap-1.5">
+              <Download size={14} />
+              다운로드
+            </Button>
+          </div>
+        )}
       </div>
 
-      {/* Download */}
+      {/* Download — desktop: inline right */}
       {file.status === 'done' && file.cleanedBlob && (
-        <div className="flex shrink-0 items-center">
+        <div className="hidden shrink-0 items-center sm:flex">
           <Button size="sm" onClick={handleDownload} className="gap-1.5">
             <Download size={14} />
             다운로드

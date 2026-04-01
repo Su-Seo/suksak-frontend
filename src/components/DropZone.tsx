@@ -1,5 +1,5 @@
 import { ImagePlus, Upload } from 'lucide-react';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { cn } from '@/lib/utils';
 
@@ -19,7 +19,12 @@ const ACCEPTED_TYPES = new Set([
 
 export function DropZone({ onFilesAdded, disabled = false }: Props) {
   const [isDragging, setIsDragging] = useState(false);
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setIsTouchDevice(window.matchMedia('(pointer: coarse)').matches);
+  }, []);
 
   const processFiles = useCallback(
     (files: FileList | null) => {
@@ -67,7 +72,7 @@ export function DropZone({ onFilesAdded, disabled = false }: Props) {
       aria-label="사진 업로드 영역. 드래그하거나 클릭하세요."
       className={cn(
         'relative flex cursor-pointer flex-col items-center justify-center gap-4',
-        'rounded-2xl border-2 border-dashed p-14 transition-all duration-200 select-none',
+        'rounded-2xl border-2 border-dashed p-8 sm:p-14 transition-all duration-200 select-none',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
         isDragging
           ? 'scale-[1.01] border-primary bg-primary/5'
@@ -103,10 +108,10 @@ export function DropZone({ onFilesAdded, disabled = false }: Props) {
 
       <div className="text-center">
         <p className="text-base font-semibold text-foreground">
-          {isDragging ? '여기에 놓으세요!' : '사진을 드래그하거나 클릭하여 선택'}
+          {isDragging ? '여기에 놓으세요!' : isTouchDevice ? '탭하여 사진 선택' : '사진을 드래그하거나 클릭하여 선택'}
         </p>
         <p className="mt-1.5 text-sm text-muted-foreground">
-          JPEG · PNG · WebP 지원 &nbsp;·&nbsp; 여러 파일 동시 처리 가능
+          JPEG · PNG · WebP · HEIC 지원 &nbsp;·&nbsp; 여러 파일 동시 처리 가능
         </p>
       </div>
     </div>

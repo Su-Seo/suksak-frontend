@@ -74,7 +74,7 @@ export function HomePage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="mx-auto max-w-2xl px-4 py-14">
+      <div className="mx-auto max-w-2xl px-4 py-8 sm:py-14">
         {/* Header */}
         <header className="mb-10 text-center">
           <div className="mb-5 flex justify-center">
@@ -82,13 +82,11 @@ export function HomePage() {
               <ShieldCheck size={36} className="text-primary" />
             </div>
           </div>
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">개인정보 슥삭</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">개인정보 슥삭</h1>
           <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground">
             사진 속에 숨겨진 <span className="font-medium text-foreground">위치 정보</span>,{' '}
             <span className="font-medium text-foreground">촬영 일시</span>,{' '}
-            <span className="font-medium text-foreground">기기 정보</span>를 모두 지우고
-            <br />
-            안전하게 공유하세요.
+            <span className="font-medium text-foreground">기기 정보</span>를 모두 지우고 안전하게 공유하세요.
           </p>
           <p className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-muted px-3 py-1 text-xs text-muted-foreground">
             <ShieldCheck size={11} />
