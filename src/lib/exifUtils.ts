@@ -1,6 +1,7 @@
+import JSZip from 'jszip';
 import exifr from 'exifr';
 
-import type { ExifTag } from '@/models/exif';
+import type { ExifTag, ProcessedFile } from '@/models/exif';
 
 function formatExposureTime(value: number): string {
   if (value >= 1) {return `${value}s`;}
@@ -192,4 +193,17 @@ export function downloadBlob(blob: Blob, fileName: string): void {
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
+}
+
+export async function downloadAllAsZip(files: ProcessedFile[]): Promise<void> {
+  const doneFiles = files.filter((f) => f.status === 'done' && f.cleanedBlob);
+  if (doneFiles.length === 0) {return;}
+
+  const zip = new JSZip();
+  for (const file of doneFiles) {
+    zip.file(getCleanFileName(file.originalFile.name), file.cleanedBlob!);
+  }
+
+  const blob = await zip.generateAsync({ type: 'blob' });
+  downloadBlob(blob, '슥삭_모음.zip');
 }

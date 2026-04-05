@@ -1,10 +1,10 @@
-import { ShieldCheck, ShieldOff, Trash2 } from 'lucide-react';
+import { ArchiveIcon, ShieldCheck, ShieldOff, Trash2 } from 'lucide-react';
 import { useCallback, useState } from 'react';
 
 import { DropZone } from '@/components/DropZone';
 import { FileCard } from '@/components/FileCard';
 import { Button } from '@/components/ui/button';
-import { readExifTags, stripExif } from '@/lib/exifUtils';
+import { downloadAllAsZip, readExifTags, stripExif } from '@/lib/exifUtils';
 import type { ProcessedFile } from '@/models/exif';
 
 async function processFile(
@@ -72,6 +72,10 @@ export function HomePage() {
     f.exifTags.some((t) => t.category === 'location'),
   ).length;
 
+  const handleDownloadAll = useCallback(() => {
+    void downloadAllAsZip(files);
+  }, [files]);
+
   return (
     <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-2xl px-4 py-8 sm:py-14">
@@ -126,15 +130,28 @@ export function HomePage() {
                   </div>
                 )}
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleClearAll}
-                className="gap-1.5 text-muted-foreground"
-              >
-                <Trash2 size={13} />
-                전체 삭제
-              </Button>
+              <div className="flex items-center gap-1">
+                {doneCount > 1 && processingCount === 0 && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleDownloadAll}
+                    className="gap-1.5"
+                  >
+                    <ArchiveIcon size={13} />
+                    ZIP 다운로드
+                  </Button>
+                )}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleClearAll}
+                  className="gap-1.5 text-muted-foreground"
+                >
+                  <Trash2 size={13} />
+                  전체 삭제
+                </Button>
+              </div>
             </div>
 
             <div className="flex flex-col gap-3">
