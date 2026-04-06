@@ -1,9 +1,10 @@
-import { ArchiveIcon, ShieldCheck, ShieldOff, Trash2 } from 'lucide-react';
+import { ArchiveIcon, Moon, ShieldCheck, ShieldOff, Sun, Trash2 } from 'lucide-react';
 import { useCallback, useState } from 'react';
 
 import { DropZone } from '@/components/DropZone';
 import { FileCard } from '@/components/FileCard';
 import { Button } from '@/components/ui/button';
+import { useDarkMode } from '@/hooks/useDarkMode';
 import { downloadAllAsZip, readExifTags, stripExif } from '@/lib/exifUtils';
 import type { ProcessedFile } from '@/models/exif';
 
@@ -27,6 +28,7 @@ async function processFile(
 }
 
 export function HomePage() {
+  const { isDark, toggle: toggleDark } = useDarkMode();
   const [files, setFiles] = useState<ProcessedFile[]>([]);
 
   const handleFilesAdded = useCallback(async (newFiles: File[]) => {
@@ -79,6 +81,18 @@ export function HomePage() {
   return (
     <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-2xl px-4 py-8 sm:py-14">
+        {/* Dark mode toggle */}
+        <div className="mb-6 flex justify-end">
+          <button
+            type="button"
+            onClick={toggleDark}
+            aria-label={isDark ? '라이트 모드로 전환' : '다크 모드로 전환'}
+            className="flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          >
+            {isDark ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
+        </div>
+
         {/* Header */}
         <header className="mb-10 text-center">
           <div className="mb-5 flex justify-center">
