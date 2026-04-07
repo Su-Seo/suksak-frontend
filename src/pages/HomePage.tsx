@@ -1,5 +1,6 @@
 import { ArchiveIcon, Moon, ShieldCheck, ShieldOff, Sun, Trash2 } from 'lucide-react';
 import { useCallback, useState } from 'react';
+import { toast } from 'sonner';
 
 import { DropZone } from '@/components/DropZone';
 import { FileCard } from '@/components/FileCard';
@@ -32,6 +33,16 @@ export function HomePage() {
   const [files, setFiles] = useState<ProcessedFile[]>([]);
 
   const handleFilesAdded = useCallback(async (newFiles: File[]) => {
+    const LARGE_FILE_THRESHOLD = 20 * 1024 * 1024; // 20MB
+    const largeFiles = newFiles.filter((f) => f.size > LARGE_FILE_THRESHOLD);
+    if (largeFiles.length > 0) {
+      const names = largeFiles.map((f) => f.name).join(', ');
+      toast.warning('대용량 파일 감지됨', {
+        description: `${names} — 처리 중 브라우저가 느려질 수 있습니다.`,
+        duration: 5000,
+      });
+    }
+
     const pendingFiles: ProcessedFile[] = newFiles.map((file) => ({
       id: crypto.randomUUID(),
       originalFile: file,
