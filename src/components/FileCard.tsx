@@ -1,4 +1,4 @@
-import { AlertCircle, CheckCircle2, Download, Loader2, Trash2 } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Download, Loader2, RotateCcw, Trash2 } from 'lucide-react';
 
 import { ExifTagBadge } from '@/components/ExifTagBadge';
 import { Button } from '@/components/ui/button';
@@ -9,9 +9,10 @@ import type { ProcessedFile } from '@/models/exif';
 interface Props {
   file: ProcessedFile;
   onRemove: (id: string) => void;
+  onRetry: (id: string) => void;
 }
 
-export function FileCard({ file, onRemove }: Props) {
+export function FileCard({ file, onRemove, onRetry }: Props) {
   const handleDownload = () => {
     if (!file.cleanedBlob) {return;}
     downloadBlob(file.cleanedBlob, getCleanFileName(file.originalFile.name));
@@ -82,9 +83,19 @@ export function FileCard({ file, onRemove }: Props) {
         </div>
 
         {file.status === 'error' && (
-          <div className="mt-1.5 flex items-center gap-1 text-xs text-destructive">
-            <AlertCircle size={12} />
-            <span>{file.error ?? '처리 중 오류가 발생했습니다'}</span>
+          <div className="mt-1.5 flex items-center justify-between gap-2">
+            <div className="flex items-center gap-1 text-xs text-destructive">
+              <AlertCircle size={12} />
+              <span>{file.error ?? '처리 중 오류가 발생했습니다'}</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => onRetry(file.id)}
+              className="shrink-0 cursor-pointer p-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
+              aria-label="다시 시도"
+            >
+              <RotateCcw size={13} />
+            </button>
           </div>
         )}
 

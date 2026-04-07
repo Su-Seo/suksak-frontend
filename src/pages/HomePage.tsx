@@ -74,6 +74,22 @@ export function HomePage() {
     f.exifTags.some((t) => t.category === 'location'),
   ).length;
 
+  const handleRetry = useCallback(async (id: string) => {
+    const target = files.find((f) => f.id === id);
+    if (!target) {return;}
+
+    setFiles((previous) =>
+      previous.map((f) =>
+        f.id === id ? { ...f, status: 'processing', error: undefined, cleanedBlob: null } : f,
+      ),
+    );
+
+    const result = await processFile(target.originalFile);
+    setFiles((previous) =>
+      previous.map((f) => (f.id === id ? { ...f, ...result } : f)),
+    );
+  }, [files]);
+
   const handleDownloadAll = useCallback(() => {
     void downloadAllAsZip(files);
   }, [files]);
@@ -170,7 +186,7 @@ export function HomePage() {
 
             <div className="flex flex-col gap-3">
               {files.map((file) => (
-                <FileCard key={file.id} file={file} onRemove={handleRemove} />
+                <FileCard key={file.id} file={file} onRemove={handleRemove} onRetry={handleRetry} />
               ))}
             </div>
           </section>
