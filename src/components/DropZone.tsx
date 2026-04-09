@@ -1,5 +1,6 @@
 import { ImagePlus, Upload } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { toast } from 'sonner';
 
 import { cn } from '@/lib/utils';
 
@@ -29,7 +30,17 @@ export function DropZone({ onFilesAdded, disabled = false }: Props) {
   const processFiles = useCallback(
     (files: FileList | null) => {
       if (!files || disabled) {return;}
-      const imageFiles = [...files].filter((f) => ACCEPTED_TYPES.has(f.type));
+      const all = [...files];
+      const imageFiles = all.filter((f) => ACCEPTED_TYPES.has(f.type));
+      const rejected = all.filter((f) => !ACCEPTED_TYPES.has(f.type));
+
+      if (rejected.length > 0) {
+        const names = rejected.map((f) => f.name).join(', ');
+        toast.error('지원하지 않는 파일 형식', {
+          description: `${names}`,
+        });
+      }
+
       if (imageFiles.length > 0) {onFilesAdded(imageFiles);}
     },
     [onFilesAdded, disabled],
